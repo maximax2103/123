@@ -28,74 +28,12 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> 
 
 export async function getOrCreateUser(telegramUserId: number, firstName: string, username?: string): Promise<UserData> {
   try {
-    const userData = await fetchAPI<UserData>("/users", {
+    return await fetchAPI<UserData>("/users", {
       method: "POST",
       body: JSON.stringify({ telegramUserId, firstName, username }),
     });
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Обнуляем время для сравнения только по дате
-
-    let shouldUpdateStreak = false;
-    let newStreakCount = userData.streak_count || 0;
-    let newExperience = userData.experience;
-    let newLastDailyRewardDate = userData.last_daily_reward_date;
-
-    if (newLastDailyRewardDate) {
-      const lastRewardDate = new Date(newLastDailyRewardDate);
-      lastRewardDate.setHours(0, 0, 0, 0);
-
-      const oneDay = 24 * 60 * 60 * 1000; // Один день в миллисекундах
-      const diffDays = Math.round(Math.abs((today.getTime() - lastRewardDate.getTime()) / oneDay));
-
-      if (diffDays === 0) {
-        // Уже получил награду сегодня, ничего не делаем
-      } else if (diffDays === 1) {
-        // Зашел на следующий день, продолжаем стрик
-        newStreakCount += 1;
-        newExperience += REWARDS.DAILY_STREAK_EXPERIENCE_REWARD;
-        shouldUpdateStreak = true;
-      } else {
-        // Пропустил день, стрик сбрасывается
-        newStreakCount = 1;
-        newExperience += REWARDS.DAILY_STREAK_EXPERIENCE_REWARD;
-        shouldUpdateStreak = true;
-      }
-    } else {
-      // Новый пользователь или первый вход
-      newStreakCount = 1;
-      newExperience += REWARDS.DAILY_STREAK_EXPERIENCE_REWARD;
-      shouldUpdateStreak = true;
-    }
-
-    if (shouldUpdateStreak) {
-      newLastDailyRewardDate = today.toISOString();
-      const updatedUser = await fetchAPI<UserData>(`/users/${telegramUserId}/update-daily-streak`, {
-        method: "POST",
-        body: JSON.stringify({
-          experience: newExperience,
-          last_daily_reward_date: newLastDailyRewardDate,
-          streak_count: newStreakCount,
-        }),
-      });
-      return updatedUser;
-    }
-
-    return userData;
   } catch (error) {
     console.error("Error getting/creating user:", error);
-    throw error;
-  }
-}
-
-export async function updateUserDailyStreak(userId: number, data: { experience: number; last_daily_reward_date: string; streak_count: number }): Promise<UserData> {
-  try {
-    return await fetchAPI<UserData>(`/users/${userId}/update-daily-streak`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  } catch (error) {
-    console.error("Error updating user daily streak:", error);
     throw error;
   }
 }

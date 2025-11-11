@@ -1,4 +1,4 @@
-import { User, Star, Trophy, Calendar, Zap, Loader2 } from "lucide-react";
+import { User, Star, Trophy, Calendar, Loader2 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -142,11 +142,6 @@ export function ProfileTab({ user }: ProfileTabProps) {
           <Calendar className="w-6 h-6 mx-auto mb-2 text-green-500" />
           <div className="text-2xl">{daysActive}</div>
           <div className="text-muted-foreground">Дней</div>
-        </Card>
-        <Card className="p-4 text-center">
-          <Zap className="w-6 h-6 mx-auto mb-2 text-orange-500" />
-          <div className="text-2xl">{userData.streak_count || 0}</div>
-          <div className="text-muted-foreground">Дней подряд</div>
         </Card>
       </div>
 

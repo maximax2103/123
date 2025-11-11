@@ -12,8 +12,6 @@ export interface UserData {
   referred_by?: number;
   created_at: string;
   last_active: string;
-  last_daily_reward_date?: string;
-  streak_count: number;
 }
 
 export interface TaskData {
@@ -51,7 +49,6 @@ export const TASK_TYPES = {
 export const REWARDS = {
   REFERRAL: 500,
   DAILY_LOGIN: 100,
-  DAILY_STREAK_EXPERIENCE_REWARD: 100,
 } as const;
 
 export const LEVELS = [
