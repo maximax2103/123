@@ -1,4 +1,4 @@
-import { CheckCircle2, Circle, Star, Loader2 } from "lucide-react";
+import { CheckCircle2, Circle, Star, Loader2, MessageCircle } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -182,6 +182,16 @@ export function TasksTab({ userId }: TasksTabProps) {
           </Card>
         ))}
       </div>
+
+      <Card className="p-4 text-center mt-4">
+        <p className="text-muted-foreground mb-3">
+          Возникли вопросы или нужна помощь?
+        </p>
+        <Button onClick={() => openTelegramLink("https://t.me/maximkuzeev")} variant="outline">
+          <MessageCircle className="w-4 h-4 mr-2" />
+          Связаться с поддержкой
+        </Button>
+      </Card>
     </div>
   );
 }

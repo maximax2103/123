@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ListTodo, Users, UserCircle, MessageCircle } from "lucide-react";
+import { ListTodo, Users, UserCircle } from "lucide-react";
 import { TasksTab } from "./components/TasksTab";
 import { ReferralTab } from "./components/ReferralTab";
 import { ProfileTab } from "./components/ProfileTab";
@@ -9,8 +9,8 @@ import { initializeApp, processReferral, getOrCreateUser } from "./lib/api";
 import { toast } from "sonner@2.0.3";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"tasks" | "referrals" | "profile" | "support">("tasks");
-  const { user, isLoading, hapticFeedback, startParam, openTelegramLink } = useTelegram();
+  const [activeTab, setActiveTab] = useState<"tasks" | "referrals" | "profile">("tasks");
+  const { user, isLoading, hapticFeedback, startParam } = useTelegram();
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -46,14 +46,9 @@ export default function App() {
     }
   }, [isLoading, user, startParam]);
 
-  const handleTabChange = (tab: "tasks" | "referrals" | "profile" | "support") => {
+  const handleTabChange = (tab: "tasks" | "referrals" | "profile") => {
     hapticFeedback("light");
     setActiveTab(tab);
-  };
-
-  const handleSupportClick = () => {
-    hapticFeedback("light");
-    openTelegramLink("https://t.me/maximkuzeev");
   };
 
   if (isLoading || !initialized) {
@@ -83,7 +78,7 @@ export default function App() {
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
         <div className="max-w-2xl mx-auto">
-          <div className="grid grid-cols-4">
+          <div className="grid grid-cols-3">
             <button
               onClick={() => handleTabChange("tasks")}
               className={`flex flex-col items-center gap-1 py-3 transition-colors ${
@@ -116,13 +111,6 @@ export default function App() {
             >
               <UserCircle className="w-6 h-6" />
               <span className="text-xs">Профиль</span>
-            </button>
-            <button
-              onClick={handleSupportClick}
-              className={`flex flex-col items-center gap-1 py-3 transition-colors text-muted-foreground hover:text-foreground`}
-            >
-              <MessageCircle className="w-6 h-6" />
-              <span className="text-xs">Поддержка</span>
             </button>
           </div>
         </div>
