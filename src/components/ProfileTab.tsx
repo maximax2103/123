@@ -1,4 +1,4 @@
-import { Star, Trophy, Calendar, Loader2 } from "lucide-react";
+import { User, Star, Trophy, Calendar, Loader2 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
@@ -20,7 +20,6 @@ export function ProfileTab({ user }: ProfileTabProps) {
       loadUserData();
     }
 
-    // Слушаем обновления баланса
     const handleBalanceUpdate = (event: CustomEvent) => {
       if (event.detail.balance !== undefined) {
         setUserData(prev => prev ? { ...prev, balance: event.detail.balance } : null);
@@ -153,10 +152,6 @@ export function ProfileTab({ user }: ProfileTabProps) {
           </div>
         </div>
       </Card>
-
-      <Button variant="outline" className="w-full" disabled>
-        Настройки (скоро)
-      </Button>
     </div>
   );
 }
