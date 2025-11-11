@@ -16,7 +16,8 @@
     "sonner": "^2.0.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "@telegram-apps/sdk": "^3.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.1",

@@ -1,4 +1,4 @@
-// Telegram Web App SDK Integration
+import { type TelegramUser } from "./database.types";
 
 declare global {
   interface Window {
@@ -7,15 +7,7 @@ declare global {
         initData: string;
         initDataUnsafe: {
           query_id?: string;
-          user?: {
-            id: number;
-            first_name: string;
-            last_name?: string;
-            username?: string;
-            language_code?: string;
-            is_premium?: boolean;
-            photo_url?: string;
-          };
+          user?: TelegramUser;
           auth_date?: number;
           hash?: string;
           start_param?: string;
@@ -91,146 +83,57 @@ declare global {
   }
 }
 
-export interface TelegramUser {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username?: string;
-  language_code?: string;
-  is_premium?: boolean;
-  photo_url?: string;
-}
-
-export class TelegramWebApp {
-  private static instance: TelegramWebApp;
-  private tg: typeof window.Telegram.WebApp | null = null;
-
-  private constructor() {
-    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
-      this.tg = window.Telegram.WebApp;
-      this.tg.ready();
-      this.tg.expand();
+export const telegram = {
+  isAvailable: (): boolean => typeof window !== "undefined" && window.Telegram?.WebApp !== undefined,
+  hapticFeedback: (type: "light" | "medium" | "heavy" = "medium") => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
     }
-  }
-
-  static getInstance(): TelegramWebApp {
-    if (!TelegramWebApp.instance) {
-      TelegramWebApp.instance = new TelegramWebApp();
+  },
+  hapticNotification: (type: "error" | "success" | "warning") => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.HapticFeedback.notificationOccurred(type);
     }
-    return TelegramWebApp.instance;
-  }
-
-  isAvailable(): boolean {
-    return this.tg !== null;
-  }
-
-  getUser(): TelegramUser | null {
-    return this.tg?.initDataUnsafe?.user || null;
-  }
-
-  getUserId(): number | null {
-    return this.tg?.initDataUnsafe?.user?.id || null;
-  }
-
-  getStartParam(): string | null {
-    return this.tg?.initDataUnsafe?.start_param || null;
-  }
-
-  getInitData(): string {
-    return this.tg?.initData || "";
-  }
-
-  showMainButton(text: string, onClick: () => void) {
-    if (!this.tg) return;
-    this.tg.MainButton.setText(text);
-    this.tg.MainButton.show();
-    this.tg.MainButton.onClick(onClick);
-  }
-
-  hideMainButton() {
-    if (!this.tg) return;
-    this.tg.MainButton.hide();
-  }
-
-  showBackButton(onClick: () => void) {
-    if (!this.tg) return;
-    this.tg.BackButton.show();
-    this.tg.BackButton.onClick(onClick);
-  }
-
-  hideBackButton() {
-    if (!this.tg) return;
-    this.tg.BackButton.hide();
-  }
-
-  hapticFeedback(type: "light" | "medium" | "heavy" = "medium") {
-    if (!this.tg) return;
-    this.tg.HapticFeedback.impactOccurred(type);
-  }
-
-  hapticNotification(type: "error" | "success" | "warning") {
-    if (!this.tg) return;
-    this.tg.HapticFeedback.notificationOccurred(type);
-  }
-
-  showAlert(message: string, callback?: () => void) {
-    if (!this.tg) {
+  },
+  showAlert: (message: string, callback?: () => void) => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.showAlert(message, callback);
+    } else {
       alert(message);
       callback?.();
-      return;
     }
-    this.tg.showAlert(message, callback);
-  }
-
-  showConfirm(message: string, callback?: (confirmed: boolean) => void) {
-    if (!this.tg) {
+  },
+  showConfirm: (message: string, callback?: (confirmed: boolean) => void) => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.showConfirm(message, callback);
+    } else {
       const result = confirm(message);
       callback?.(result);
-      return;
     }
-    this.tg.showConfirm(message, callback);
-  }
-
-  close() {
-    if (!this.tg) return;
-    this.tg.close();
-  }
-
-  openLink(url: string) {
-    if (!this.tg) {
+  },
+  close: () => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.close();
+    }
+  },
+  openLink: (url: string) => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.openLink(url);
+    } else {
       window.open(url, "_blank");
-      return;
     }
-    this.tg.openLink(url);
-  }
-
-  openTelegramLink(url: string) {
-    if (!this.tg) {
+  },
+  openTelegramLink: (url: string) => {
+    if (telegram.isAvailable()) {
+      window.Telegram.WebApp.openTelegramLink(url);
+    } else {
       window.open(url, "_blank");
-      return;
     }
-    this.tg.openTelegramLink(url);
-  }
-
-  getColorScheme(): "light" | "dark" {
-    return this.tg?.colorScheme || "dark";
-  }
-
-  getPlatform(): string {
-    return this.tg?.platform || "unknown";
-  }
-
-  // Функция для тестирования без Telegram (для разработки)
-  getMockUser(): TelegramUser {
-    return {
-      id: 123456789,
-      first_name: "Test",
-      last_name: "User",
-      username: "testuser",
-      language_code: "ru",
-      is_premium: false,
-    };
-  }
-}
-
-export const telegram = TelegramWebApp.getInstance();
+  },
+  getColorScheme: (): "light" | "dark" => {
+    return telegram.isAvailable() ? window.Telegram.WebApp.colorScheme : "dark";
+  },
+  getPlatform: (): string => {
+    return telegram.isAvailable() ? window.Telegram.WebApp.platform : "unknown";
+  },
+};

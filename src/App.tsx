@@ -7,6 +7,9 @@ import { Toaster } from "./components/ui/sonner";
 import { useTelegram } from "./hooks/useTelegram";
 import { initializeApp, processReferral, getOrCreateUser } from "./lib/api";
 import { toast } from "sonner@2.0.3";
+import { init } from "@telegram-apps/sdk";
+
+init(); // Инициализация SDK Telegram Web Apps
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<"tasks" | "referrals" | "profile">("tasks");
@@ -14,7 +17,7 @@ export default function App() {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
+    const initApp = async () => {
       try {
         await initializeApp();
         
@@ -42,7 +45,7 @@ export default function App() {
     };
 
     if (!isLoading) {
-      init();
+      initApp();
     }
   }, [isLoading, user, startParam]);
 

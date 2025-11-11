@@ -14,6 +14,15 @@ export interface UserData {
   last_active: string;
 }
 
+export interface TelegramUser {
+  id: number;
+  first_name: string;
+  last_name?: string;
+  username?: string;
+  language_code?: string;
+  is_premium?: boolean;
+}
+
 export interface TaskData {
   id: number;
   title: string;
@@ -26,16 +35,16 @@ export interface TaskData {
 }
 
 export interface UserTask {
-  user_id: number;
+  telegram_user_id: number;
   task_id: number;
   completed: boolean;
   completed_at?: string;
-  created_at: string;
 }
 
 export interface ReferralData {
-  referrer_id: number;
-  referred_id: number;
+  id: string;
+  referrer_telegram_user_id: number;
+  referred_telegram_user_id: number;
   reward_claimed: boolean;
   created_at: string;
 }
