@@ -24,8 +24,7 @@ export function ReferralTab({ userId, userName }: ReferralTabProps) {
   const [loading, setLoading] = useState(true);
   const { hapticNotification } = useTelegram();
   
-  // TODO: Замените на URL вашего бота
-  const botUsername = "your_bot"; // Замените на имя вашего бота
+  const botUsername = "starsquestsbot";
   const referralLink = `https://t.me/${botUsername}?start=ref${userId}`;
 
   useEffect(() => {
