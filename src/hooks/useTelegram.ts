@@ -7,14 +7,16 @@ export function useTelegram() {
 
   useEffect(() => {
     const initializeTelegram = () => {
-      // Проверяем доступность Telegram WebApp
+      console.log("Checking Telegram WebApp availability...");
+      console.log("window.Telegram?.WebApp:", window.Telegram?.WebApp);
+      console.log("telegram.isAvailable():", telegram.isAvailable());
+
       if (telegram.isAvailable()) {
         console.log("Telegram WebApp is available.");
         const tgUser = telegram.getUser();
         console.log("Telegram User Data:", tgUser);
         setUser(tgUser);
       } else {
-        // Для разработки используем mock пользователя
         console.warn("Telegram WebApp not available, using mock user");
         const mockUser = telegram.getMockUser();
         console.log("Mock User Data:", mockUser);
@@ -24,18 +26,18 @@ export function useTelegram() {
     };
 
     if (typeof window !== "undefined" && window.Telegram) {
-      // Если Telegram SDK уже загружен
+      console.log("window.Telegram is defined.");
       if (window.Telegram.WebApp.ready) {
+        console.log("Waiting for Telegram.WebApp.ready event...");
         window.Telegram.WebApp.ready(() => {
+          console.log("Telegram.WebApp is ready.");
           initializeTelegram();
         });
       } else {
-        // Fallback, если ready уже был вызван или по какой-то причине недоступен (редко)
+        console.warn("Telegram.WebApp.ready event not available, initializing immediately.");
         initializeTelegram();
       }
     } else {
-      // Если Telegram SDK еще не загружен или не определен
-      // Можно добавить задержку или другую логику ожидания
       console.warn("window.Telegram is not defined, delaying initialization.");
       const timer = setTimeout(() => {
         initializeTelegram();

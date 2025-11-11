@@ -1,30 +1,29 @@
 import { useState, useEffect } from "react";
-import { ListTodo, Users, UserCircle } from "lucide-react";
+import { ListTodo, Users } from "lucide-react";
 import { TasksTab } from "./components/TasksTab";
 import { ReferralTab } from "./components/ReferralTab";
-import { ProfileTab } from "./components/ProfileTab";
+import { UserProfileDisplay } from "./components/UserProfileDisplay";
 import { Toaster } from "./components/ui/sonner";
 import { useTelegram } from "./hooks/useTelegram";
 import { initializeApp, processReferral, getOrCreateUser } from "./lib/api";
+import { UserData } from "./lib/database.types";
 import { toast } from "sonner@2.0.3";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"tasks" | "referrals" | "profile">("tasks");
+  const [activeTab, setActiveTab] = useState<"tasks" | "referrals">("tasks");
   const { user, isLoading, hapticFeedback, startParam } = useTelegram();
   const [initialized, setInitialized] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
-  // Инициализация приложения
   useEffect(() => {
     const init = async () => {
       try {
-        // Инициализируем задания
         await initializeApp();
         
-        // Создаем или получаем пользователя
-        if (user?.id) {
-          await getOrCreateUser(user.id, user.first_name, user.username);
+        if (user?.id && telegram.isAvailable()) {
+          const fetchedUserData = await getOrCreateUser(user.id, user.first_name, user.username);
+          setUserData(fetchedUserData);
           
-          // Обрабатываем реферальную ссылку
           if (startParam && startParam.startsWith("ref")) {
             const referrerId = parseInt(startParam.substring(3));
             if (referrerId && referrerId !== user.id) {
@@ -50,8 +49,7 @@ export default function App() {
     }
   }, [isLoading, user, startParam]);
 
-  // Вибрация при переключении вкладок
-  const handleTabChange = (tab: "tasks" | "referrals" | "profile") => {
+  const handleTabChange = (tab: "tasks" | "referrals") => {
     hapticFeedback("light");
     setActiveTab(tab);
   };
@@ -74,16 +72,18 @@ export default function App() {
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto pb-20">
         <div className="max-w-2xl mx-auto p-4">
+          {/* User Profile Display */}
+          <UserProfileDisplay user={user} userData={userData} />
+
           {activeTab === "tasks" && <TasksTab userId={user?.id || 0} />}
           {activeTab === "referrals" && <ReferralTab userId={user?.id || 0} userName={user?.first_name || "User"} />}
-          {activeTab === "profile" && <ProfileTab user={user} />}
         </div>
       </div>
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
         <div className="max-w-2xl mx-auto">
-          <div className="grid grid-cols-3">
+          <div className="grid grid-cols-2">
             <button
               onClick={() => handleTabChange("tasks")}
               className={`flex flex-col items-center gap-1 py-3 transition-colors ${
@@ -105,17 +105,6 @@ export default function App() {
             >
               <Users className="w-6 h-6" />
               <span className="text-xs">Рефералы</span>
-            </button>
-            <button
-              onClick={() => handleTabChange("profile")}
-              className={`flex flex-col items-center gap-1 py-3 transition-colors ${
-                activeTab === "profile"
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <UserCircle className="w-6 h-6" />
-              <span className="text-xs">Профиль</span>
             </button>
           </div>
         </div>
