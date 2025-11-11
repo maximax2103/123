@@ -53,9 +53,6 @@
     build: {
       target: 'esnext',
       outDir: 'build',
-      rollupOptions: {
-        external: ['jsr:@supabase/supabase-js']
-      }
     },
     server: {
       port: 3000,
