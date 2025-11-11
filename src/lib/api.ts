@@ -1,6 +1,6 @@
 // API функции для работы с backend через KV store
 
-import * as kv from "@/utils/supabase/kv_store.tsx";
+import * as kv from "../supabase/functions/server/kv_store.tsx";
 import { UserData, TaskData, UserTask, ReferralData, REWARDS, calculateLevel } from "./database.types";
 
 // ==================== ПОЛЬЗОВАТЕЛИ ====================
