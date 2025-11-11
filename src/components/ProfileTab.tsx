@@ -1,6 +1,6 @@
 import { User, Star, Trophy, Calendar, Loader2 } from "lucide-react";
 import { Card } from "./ui/card";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 import { useEffect, useState } from "react";
@@ -84,12 +84,11 @@ export function ProfileTab({ user }: ProfileTabProps) {
       <Card className="p-6">
         <div className="flex flex-col items-center text-center space-y-4">
           <Avatar className="w-20 h-20">
+            {user?.photo_url ? (
+              <AvatarImage src={user.photo_url} alt={user.first_name || "User"} />
+            ) : null}
             <AvatarFallback className="text-2xl">
-              {user?.photo_url ? (
-                <img src={user.photo_url} alt={userData.first_name} />
-              ) : (
-                <User className="w-10 h-10" />
-              )}
+              {user?.first_name ? user.first_name.charAt(0) : <User className="w-10 h-10" />}
             </AvatarFallback>
           </Avatar>
           <div>
