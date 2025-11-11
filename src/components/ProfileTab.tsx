@@ -166,5 +166,12 @@ export function ProfileTab({ user }: ProfileTabProps) {
           </div>
         </div>
       </Card>
-
+      <Button variant="outline" className="w-full" disabled>
+        <Settings className="w-4 h-4 mr-2" />
+        Настройки (скоро)
+      </Button>
+    </div>
+  );
+}
+    
     
