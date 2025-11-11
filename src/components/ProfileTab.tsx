@@ -1,4 +1,4 @@
-import { User, Star, Trophy, Calendar, Settings, Loader2 } from "lucide-react";
+import { User, Star, Trophy, Calendar, Zap, Loader2 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -93,9 +93,9 @@ export function ProfileTab({ user }: ProfileTabProps) {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h3>{userData.first_name}</h3>
+            <h3>{user?.first_name || userData.first_name}</h3>
             <p className="text-muted-foreground">
-              {userData.username ? `@${userData.username}` : `ID: ${userData.user_id}`}
+              {user?.username ? `@${user.username}` : (userData.username ? `@${userData.username}` : `ID: ${userData.user_id}`)}
             </p>
           </div>
           <div className="w-full space-y-2">
@@ -143,6 +143,11 @@ export function ProfileTab({ user }: ProfileTabProps) {
           <div className="text-2xl">{daysActive}</div>
           <div className="text-muted-foreground">Дней</div>
         </Card>
+        <Card className="p-4 text-center">
+          <Zap className="w-6 h-6 mx-auto mb-2 text-orange-500" />
+          <div className="text-2xl">{userData.streak_count || 0}</div>
+          <div className="text-muted-foreground">Дней подряд</div>
+        </Card>
       </div>
 
       <Card className="p-4">
@@ -166,12 +171,7 @@ export function ProfileTab({ user }: ProfileTabProps) {
           </div>
         </div>
       </Card>
-      <Button variant="outline" className="w-full" disabled>
-        <Settings className="w-4 h-4 mr-2" />
-        Настройки (скоро)
-      </Button>
+
     </div>
   );
 }
-    
-    

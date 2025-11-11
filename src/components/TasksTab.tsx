@@ -56,9 +56,20 @@ export function TasksTab({ userId }: TasksTabProps) {
 
       // Если есть action_url, открываем ссылку
       if (task.action_url) {
-        openTelegramLink(task.action_url);
-        // Даем пользователю время выполнить действие
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+          const url = new URL(task.action_url);
+          if (url.protocol === 'http:' || url.protocol === 'https:') {
+            openTelegramLink(task.action_url);
+            // Даем пользователю время выполнить действие
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          } else {
+            console.warn('Blocked opening of unsafe URL protocol:', task.action_url);
+            toast.error('Небезопасный URL-адрес задания');
+          }
+        } catch (e) {
+          console.error('Invalid URL for task:', task.action_url, e);
+          toast.error('Недействительный URL-адрес задания');
+        }
       }
 
       const result = await completeTask(userId, task.id);
@@ -182,6 +193,15 @@ export function TasksTab({ userId }: TasksTabProps) {
           </Card>
         ))}
       </div>
+
+      <Card className="p-4 text-center mt-4">
+        <p className="text-muted-foreground mb-3">
+          Хотите добавить свое задание?
+        </p>
+        <Button onClick={() => openTelegramLink("https://t.me/maximkuzeev")}>
+          Связаться с менеджером
+        </Button>
+      </Card>
     </div>
   );
 }
