@@ -1,6 +1,5 @@
-import { User, Star, Trophy, Calendar, Loader2 } from "lucide-react";
+import { Star, Trophy, Calendar, Loader2 } from "lucide-react";
 import { Card } from "./ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 import { useEffect, useState } from "react";
@@ -83,19 +82,8 @@ export function ProfileTab({ user }: ProfileTabProps) {
 
       <Card className="p-6">
         <div className="flex flex-col items-center text-center space-y-4">
-          <Avatar className="w-20 h-20">
-            {user?.photo_url ? (
-              <AvatarImage src={user.photo_url} alt={user.first_name || "User"} />
-            ) : null}
-            <AvatarFallback className="text-2xl">
-              {user?.first_name ? user.first_name.charAt(0) : <User className="w-10 h-10" />}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <h3>{user?.first_name || userData.first_name}</h3>
-            <p className="text-muted-foreground">
-              {user?.username ? `@${user.username}` : (userData.username ? `@${userData.username}` : `ID: ${userData.user_id}`)}
-            </p>
+          <div className="text-3xl font-bold">
+            ID: {userData.user_id}
           </div>
           <div className="w-full space-y-2">
             <div className="flex justify-between">
@@ -166,6 +154,9 @@ export function ProfileTab({ user }: ProfileTabProps) {
         </div>
       </Card>
 
+      <Button variant="outline" className="w-full" disabled>
+        Настройки (скоро)
+      </Button>
     </div>
   );
 }

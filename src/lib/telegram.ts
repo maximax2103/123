@@ -37,7 +37,6 @@ declare global {
         viewportStableHeight: number;
         headerColor: string;
         backgroundColor: string;
-        isClosingConfirmationEnabled: boolean;
         BackButton: {
           isVisible: boolean;
           show(): void;
@@ -225,12 +224,11 @@ export class TelegramWebApp {
   getMockUser(): TelegramUser {
     return {
       id: 123456789,
-      first_name: "Mock User",
-      last_name: "",
-      username: "mockuser",
+      first_name: "Test",
+      last_name: "User",
+      username: "testuser",
       language_code: "ru",
       is_premium: false,
-      photo_url: "https://via.placeholder.com/150", // Placeholder image
     };
   }
 }
